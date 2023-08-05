@@ -1,0 +1,326 @@
+
+/* --------------------------------- CRIAÇÃO DO DATABASE -------------------------------------------- */
+
+CREATE DATABASE Projeto_Marketplace
+
+/* --------------------------------- CRIAÇÃO DAS TABELAS -------------------------------------------- */
+
+/* CRIAÇÃO TABELA FRETE */
+
+CREATE TABLE Frete (
+    ID_Frete INT PRIMARY KEY,
+    Descricao VARCHAR (100) NOT NULL,
+    Preco DECIMAL (10,2) NOT NULL,
+)
+
+/* CRIAÇÃO TABELA FRETE STATUS */
+
+CREATE TABLE Frete_Status (
+    ID_Frete_Status INT PRIMARY KEY,
+    Descricao VARCHAR (100) NOT NULL
+)
+
+/* CRIAÇÃO TABELA SKU */
+
+CREATE TABLE SKU (
+    ID_SKU INT PRIMARY KEY,
+    Descricao VARCHAR (100) NOT NULL,
+    Tipo VARCHAR (100) NOT NULL,
+    ID_vendedor INT NOT NULL,
+    Dimensao VARCHAR(20) NOT NULL,
+    Marca VARCHAR(100) NOT NULL,
+    Fabricador VARCHAR(100) NOT NULL,
+    Cor VARCHAR (100) NOT NULL,
+)
+
+/* CRIAÇÃO TABELA Categoria */
+
+CREATE TABLE Categoria (
+    ID_Categoria INT PRIMARY KEY,
+    Descricao VARCHAR (100) NOT NULL,
+    
+)
+
+/* CRIAÇÃO TABELA Sub_Categoria */
+--DROP TABLE  Sub_Categoria
+
+CREATE TABLE Sub_Categoria (
+    ID_SubCategoria INT PRIMARY KEY,
+    ID_Categoria INT FOREIGN KEY REFERENCES Categoria(ID_Categoria),
+    Descricao VARCHAR (100) NOT NULL,  
+)
+
+/* CRIAÇÃO TABELA Pagamento */
+
+CREATE TABLE Pagamento (
+    ID_Pagamento INT PRIMARY KEY,
+    Status VARCHAR (100) NOT NULL,
+    Data_Atualizacao DATE NOT NULL,
+    Nota_Fiscal INT NOT NULL,
+    
+)
+
+CREATE TABLE Vendedor (
+    ID_Vendedor INT PRIMARY KEY,
+    Descricao VARCHAR (100) NOT NULL,
+    Razao_Social VARCHAR (100) NOT NULL,
+    Nome_Fantasia VARCHAR (100) NOT NULL,
+    Pontuacao_plataforma DECIMAL NOT NULL,
+    Cidade VARCHAR (100) NOT NULL,
+    Estado VARCHAR (100) NOT NULL,
+
+)
+
+/* CRIAÇÃO TABELA RELATORIO DE VENDAS */
+
+
+CREATE TABLE Relatorio_Vendas (
+
+    Indice INT IDENTITY (1,1) PRIMARY KEY,
+    Order_ID INT NOT NULL,
+    Data_Compra DATE,
+    ID_Frete INT FOREIGN KEY REFERENCES Frete(ID_Frete),
+    ID_Frete_Status INT FOREIGN KEY REFERENCES Frete_Status(ID_Frete_Status),
+    ID_SKU INT FOREIGN KEY REFERENCES SKU(ID_SKU),
+    ID_Categorias INT FOREIGN KEY REFERENCES Categoria(ID_Categoria),
+    ID_Subcategoria INT FOREIGN KEY REFERENCES Sub_Categoria(ID_Subcategoria),
+    ID_Vendedor INT FOREIGN KEY REFERENCES Vendedor(ID_Vendedor),
+    ID_Pagamento INT FOREIGN KEY REFERENCES Pagamento(ID_Pagamento)
+
+)
+
+/* ---------------------------------INSERIR DADOS NAS TABELAS -------------------------------------------- */
+
+-- Inserção de dados na tabela Frete
+INSERT INTO Frete (ID_Frete, Descricao, Preco)
+VALUES
+    (1, 'Frete Padrão', 10.00),
+    (2, 'Frete Expresso', 20.00);
+
+-- Inserção de dados na tabela Frete_Status
+INSERT INTO Frete_Status (ID_Frete_Status, Descricao)
+VALUES
+    (1, 'Em Processamento'),
+    (2, 'Enviado'),
+    (3, 'Entregue');
+
+-- Inserção de dados na tabela Categoria
+INSERT INTO Categoria (ID_Categoria, Descricao)
+VALUES
+    (1, 'Eletrônicos'),
+    (2, 'Moda'),
+    (3, 'Casa e Decoração'),
+    (4, 'Calçados'),
+    (5, 'Esporte e Lazer'),
+    (6, 'Acessórios');
+
+-- Inserção de dados na tabela Sub_Categoria
+INSERT INTO Sub_Categoria (ID_SubCategoria, ID_Categoria, Descricao)
+VALUES
+    (1, 1, 'Smartphones'),
+    (2, 1, 'Laptops'),
+    (3, 2, 'Roupas Femininas'),
+    (4, 2, 'Roupas Masculinas'),
+    (5, 3, 'Móveis'),
+    (6, 3, 'Utensílios Domésticos'),
+    (7, 4, 'Sapatos'),
+    (8, 4, 'Sandálias'),
+    (9, 5, 'Equipamentos Esportivos'),
+    (10, 5, 'Roupas Esportivas'),
+    (11, 6, 'Joias'),
+    (12, 6, 'Relógios');
+
+-- Inserção de dados na tabela Vendedor
+
+INSERT INTO Vendedor (ID_Vendedor, Descricao, Razao_Social, Nome_Fantasia, Pontuacao_plataforma, Cidade, Estado)
+VALUES
+    (1, 'Vendedor A', 'Razão Social A', 'Nome Fantasia A', 4.5, 'São Paulo', 'SP'),
+    (2, 'Vendedor B', 'Razão Social B', 'Nome Fantasia B', 4.2, 'Rio de Janeiro', 'RJ'),
+    (3, 'Vendedor C', 'Razão Social C', 'Nome Fantasia C', 3.8, 'Belo Horizonte', 'MG'),
+    (4, 'Vendedor D', 'Razão Social D', 'Nome Fantasia D', 4.7, 'Curitiba', 'PR'),
+    (5, 'Vendedor E', 'Razão Social E', 'Nome Fantasia E', 3.5, 'Salvador', 'BA'),
+    (6, 'Vendedor F', 'Razão Social F', 'Nome Fantasia F', 4.1, 'Fortaleza', 'CE'),
+    (7, 'Vendedor G', 'Razão Social G', 'Nome Fantasia G', 4.9, 'Recife', 'PE'),
+    (8, 'Vendedor H', 'Razão Social H', 'Nome Fantasia H', 3.9, 'Brasília', 'DF'),
+    (9, 'Vendedor I', 'Razão Social I', 'Nome Fantasia I', 4.6, 'Manaus', 'AM'),
+    (10, 'Vendedor J', 'Razão Social J', 'Nome Fantasia J', 4.4, 'Porto Alegre', 'RS');
+
+-- Inserção de dados na tabela SKU
+
+INSERT INTO SKU (ID_SKU, Descricao, Tipo, ID_vendedor, Dimensao, Marca, Fabricador, Cor)
+VALUES
+    (1, 'Smartphone Modelo X', 'Eletrônico', 1, '15x8x1', 'Marca A', 'Fabricante A', 'Preto'),
+    (2, 'Laptop Modelo Y', 'Eletrônico', 1, '20x12x2', 'Marca A', 'Fabricante A', 'Prata'),
+    (3, 'Vestido Floral', 'Vestuário', 2, '90x60x5', 'Marca B', 'Fabricante B', 'Floral'),
+    (4, 'TV LED 50 polegadas', 'Eletrônico', 3, '120x70x10', 'Marca C', 'Fabricante C', 'Preto'),
+    (5, 'Sapatos Esportivos', 'Calçado', 4, '30x15x10', 'Marca D', 'Fabricante D', 'Branco'),
+    (6, 'Fogão a Gás', 'Eletrodoméstico', 5, '80x60x80', 'Marca E', 'Fabricante E', 'Inox'),
+    (7, 'Bicicleta Mountain Bike', 'Esporte e Lazer', 6, '170x70x100', 'Marca F', 'Fabricante F', 'Vermelho'),
+    (8, 'Máquina de Café', 'Eletrodoméstico', 7, '40x20x30', 'Marca G', 'Fabricante G', 'Preto'),
+    (9, 'Smartwatch Modelo Z', 'Eletrônico', 8, '10x10x5', 'Marca H', 'Fabricante H', 'Azul'),
+    (10, 'Camiseta Casual', 'Vestuário', 9, '70x50x2', 'Marca I', 'Fabricante I', 'Cinza'),
+    (11, 'Notebook Ultrabook', 'Eletrônico', 10, '18x10x1', 'Marca J', 'Fabricante J', 'Prata'),
+    (12, 'Sofá de Couro', 'Móveis', 1, '200x100x80', 'Marca A', 'Fabricante K', 'Marrom'),
+    (13, 'Colar de Pérolas', 'Acessório', 2, '10x10x1', 'Marca B', 'Fabricante L', 'Branco'),
+    (14, 'Monitor Curvo 27 polegadas', 'Eletrônico', 3, '60x40x10', 'Marca C', 'Fabricante M', 'Preto'),
+    (15, 'Tênis de Corrida', 'Calçado', 4, '28x12x10', 'Marca D', 'Fabricante N', 'Azul'),
+    (16, 'Geladeira Frost-Free', 'Eletrodoméstico', 5, '150x70x70', 'Marca E', 'Fabricante O', 'Branco'),
+    (17, 'Prancha de Surf', 'Esporte e Lazer', 6, '220x50x5', 'Marca F', 'Fabricante P', 'Azul'),
+    (18, 'Liquidificador Multifuncional', 'Eletrodoméstico', 7, '25x15x20', 'Marca G', 'Fabricante Q', 'Vermelho'),
+    (19, 'Óculos de Sol Elegance', 'Acessório', 8, '15x5x5', 'Marca H', 'Fabricante R', 'Preto'),
+    (20, 'Jaqueta de Couro Masculina', 'Vestuário', 9, '80x50x5', 'Marca I', 'Fabricante S', 'Marrom');
+
+
+-- Inserção de 50 exemplos na tabela Pagamento
+INSERT INTO Pagamento (ID_Pagamento, Status, Data_Atualizacao, Nota_Fiscal)
+VALUES
+    (1, 'Pendente', '2023-08-01', 12345),
+    (2, 'Concluído', '2023-07-25', 67890),
+    (3, 'Pendente', '2023-08-02', 54321),
+    (4, 'Em Processamento', '2023-08-03', 98765),
+    (5, 'Concluído', '2023-07-20', 45678),
+    (6, 'Em Processamento', '2023-07-15', 78901),
+    (7, 'Pendente', '2023-08-05', 23456),
+    (8, 'Concluído', '2023-07-10', 87654),
+    (9, 'Em Processamento', '2023-08-04', 56789),
+    (10, 'Pendente', '2023-07-22', 34567),
+    (11, 'Concluído', '2023-08-03', 65432),
+    (12, 'Em Processamento', '2023-07-21', 89012),
+    (13, 'Pendente', '2023-08-05', 43210),
+    (14, 'Concluído', '2023-07-18', 76543),
+    (15, 'Em Processamento', '2023-08-02', 10987),
+    (16, 'Pendente', '2023-07-28', 98765),
+    (17, 'Concluído', '2023-08-01', 21098),
+    (18, 'Em Processamento', '2023-07-30', 87654),
+    (19, 'Pendente', '2023-08-04', 10987),
+    (20, 'Concluído', '2023-07-27', 54321),
+    (21, 'Em Processamento', '2023-08-03', 65432),
+    (22, 'Pendente', '2023-07-29', 87654),
+    (23, 'Concluído', '2023-07-26', 54321),
+    (24, 'Em Processamento', '2023-08-05', 21098),
+    (25, 'Pendente', '2023-07-31', 76543),
+    (26, 'Concluído', '2023-07-24', 32109),
+    (27, 'Em Processamento', '2023-08-02', 65432),
+    (28, 'Pendente', '2023-07-30', 10987),
+    (29, 'Concluído', '2023-07-23', 43210),
+    (30, 'Em Processamento', '2023-08-01', 87654),
+    (31, 'Pendente', '2023-07-29', 54321),
+    (32, 'Concluído', '2023-07-25', 21098),
+    (33, 'Em Processamento', '2023-08-03', 76543),
+    (34, 'Pendente', '2023-07-28', 32109),
+    (35, 'Concluído', '2023-07-26', 65432),
+    (36, 'Em Processamento', '2023-08-05', 43210),
+    (37, 'Pendente', '2023-07-27', 10987),
+    (38, 'Concluído', '2023-07-24', 54321),
+    (39, 'Em Processamento', '2023-08-01', 32109),
+    (40, 'Pendente', '2023-07-23', 87654),
+    (41, 'Concluído', '2023-07-30', 54321),
+    (42, 'Em Processamento', '2023-08-02', 21098),
+    (43, 'Pendente', '2023-07-31', 65432),
+    (44, 'Concluído', '2023-07-25', 43210),
+    (45, 'Em Processamento', '2023-07-29', 10987),
+    (46, 'Pendente', '2023-08-03', 76543),
+    (47, 'Concluído', '2023-07-26', 32109),
+    (48, 'Em Processamento', '2023-08-05', 54321),
+    (49, 'Pendente', '2023-07-28', 21098),
+    (50, 'Concluído', '2023-07-24', 87654),
+    (51, 'Concluído', '2023-07-25', 67890),
+    (52, 'Pendente', '2023-08-02', 54321),
+    (53, 'Em Processamento', '2023-08-03', 98765),
+    (54, 'Concluído', '2023-07-20', 45678),
+    (55, 'Em Processamento', '2023-07-15', 78901),
+    (56, 'Pendente', '2023-08-05', 23456),
+    (57, 'Concluído', '2023-07-10', 87654),
+    (58, 'Em Processamento', '2023-08-04', 56789),
+    (59, 'Pendente', '2023-07-22', 34567),
+    (60, 'Concluído', '2023-08-03', 65432),
+    (61, 'Em Processamento', '2023-07-21', 89012),
+    (62, 'Pendente', '2023-08-05', 43210),
+    (63, 'Concluído', '2023-07-18', 76543),
+    (64, 'Em Processamento', '2023-08-02', 10987),
+    (65, 'Pendente', '2023-07-28', 98765),
+    (66, 'Concluído', '2023-08-01', 21098),
+    (67, 'Em Processamento', '2023-07-30', 87654),
+    (68, 'Pendente', '2023-08-04', 10987),
+    (69, 'Concluído', '2023-07-27', 54321),
+    (70, 'Em Processamento', '2023-08-03', 65432);
+
+
+-- Inserção de dados na tabela Relatorio_Vendas
+INSERT INTO Relatorio_Vendas (Order_ID, Data_Compra, ID_Frete, ID_Frete_Status, ID_SKU, ID_Categorias, ID_Subcategoria, ID_Vendedor, ID_Pagamento)
+SELECT
+    ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS Order_ID,
+    DATEADD(DAY, -ABS(CHECKSUM(NEWID())) % 365, GETDATE()) AS Data_Compra,
+    ABS(CHECKSUM(NEWID())) % 2 + 1 AS ID_Frete,
+    ABS(CHECKSUM(NEWID())) % 3 + 1 AS ID_Frete_Status,
+    ABS(CHECKSUM(NEWID())) % 20 + 1 AS ID_SKU,
+    ABS(CHECKSUM(NEWID())) % 6 + 1 AS ID_Categorias,
+    ABS(CHECKSUM(NEWID())) % 12 + 1 AS ID_Subcategoria,
+    ABS(CHECKSUM(NEWID())) % 10 + 1 AS ID_Vendedor,
+    ID_Pagamento
+FROM Pagamento;
+
+
+/* --------------------------------- CONSULTA DAS TABELAS -------------------------------------------- */
+
+
+SELECT * FROM Relatorio_Vendas
+SELECT * FROM Pagamento
+SELECT * FROM SKU
+SELECT * FROM Categoria
+SELECT * FROM Sub_Categoria
+SELECT * FROM Frete
+SELECT * FROM Frete_Status
+SELECT * FROM Vendedor
+
+
+SELECT * FROM Vendedor
+WHERE Pontuacao_plataforma > 4.5
+ORDER BY ID_vendedor
+
+SELECT * FROM Relatorio_Vendas
+Where ID_SKU = 8 OR ID_Categorias = 2
+ORDER BY ID_SKU
+
+SELECT * FROM Relatorio_Vendas
+Where ID_Frete = 2
+ORDER BY ID_Pagamento
+
+SELECT * FROM Relatorio_Vendas
+Where ID_Frete = 2
+ORDER BY ID_Pagamento
+ 
+-- TOTAL DE VENDAS POR VENDEDOR
+SELECT ID_Vendedor, COUNT(Order_ID) AS Total_Vendas_Por_Vendedor
+FROM Relatorio_Vendas
+GROUP BY ID_Vendedor
+
+-- TOTAL DE VENDAS POR FRETE
+SELECT ID_Frete, COUNT(Order_ID) AS Total_Por_Tipo_Frete
+FROM Relatorio_Vendas
+GROUP BY ID_Frete
+
+
+/* --------------------------------- DELETAR TABELAS -------------------------------------------- */
+
+ /* ---------- DELETAR COM DROP TABLE -----------*/
+
+DROP TABLE Relatorio_Vendas 
+DROP TABLE Frete
+DROP TABLE Frete_Status 
+DROP TABLE Vendedor
+DROP TABLE SKU
+DROP TABLE Sub_Categoria
+DROP TABLE Categoria
+DROP TABLE Pagamento    
+
+ /* ---------- DELETAR COM TRUNCATE TABLE -----------*/
+
+TRUNCATE TABLE Relatorio_Vendas 
+TRUNCATE TABLE Frete
+TRUNCATE TABLE Frete_Status 
+TRUNCATE TABLE Vendedor
+TRUNCATE TABLE SKU
+TRUNCATE TABLE Sub_Categoria
+TRUNCATE TABLE Categoria
+TRUNCATE TABLE Pagamento    
