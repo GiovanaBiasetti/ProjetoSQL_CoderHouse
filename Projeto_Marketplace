@@ -1,6 +1,7 @@
 
 /* --------------------------------- CRIAÇÃO DO DATABASE -------------------------------------------- */
 
+
 CREATE DATABASE Projeto_Marketplace_CoderHouse
 GO
 USE Projeto_Marketplace_CoderHouse
