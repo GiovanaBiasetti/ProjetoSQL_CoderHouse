@@ -1,7 +1,9 @@
 
 /* --------------------------------- CRIAÇÃO DO DATABASE -------------------------------------------- */
 
-CREATE DATABASE Projeto_Marketplace
+CREATE DATABASE Projeto_Marketplace_CoderHouse
+GO
+USE Projeto_Marketplace_CoderHouse
 
 /* --------------------------------- CRIAÇÃO DAS TABELAS -------------------------------------------- */
 
@@ -18,19 +20,6 @@ CREATE TABLE Frete (
 CREATE TABLE Frete_Status (
     ID_Frete_Status INT PRIMARY KEY,
     Descricao VARCHAR (100) NOT NULL
-)
-
-/* CRIAÇÃO TABELA SKU */
-
-CREATE TABLE SKU (
-    ID_SKU INT PRIMARY KEY,
-    Descricao VARCHAR (100) NOT NULL,
-    Tipo VARCHAR (100) NOT NULL,
-    ID_vendedor INT NOT NULL,
-    Dimensao VARCHAR(20) NOT NULL,
-    Marca VARCHAR(100) NOT NULL,
-    Fabricador VARCHAR(100) NOT NULL,
-    Cor VARCHAR (100) NOT NULL,
 )
 
 /* CRIAÇÃO TABELA Categoria */
@@ -50,13 +39,31 @@ CREATE TABLE Sub_Categoria (
     Descricao VARCHAR (100) NOT NULL,  
 )
 
+/* CRIAÇÃO TABELA SKU */
+
+CREATE TABLE SKU (
+    ID_SKU INT PRIMARY KEY,
+    Descricao VARCHAR(100) NOT NULL,
+    Tipo VARCHAR(100) NOT NULL,
+    ID_vendedor INT NOT NULL,
+    Dimensao VARCHAR(20) NOT NULL,
+    Marca VARCHAR(100) NOT NULL,
+    Fabricador VARCHAR(100) NOT NULL,
+    Cor VARCHAR(100) NOT NULL,
+    ID_SubCategoria INT FOREIGN KEY REFERENCES Sub_Categoria(ID_SubCategoria)
+);
+
+
+
+
 /* CRIAÇÃO TABELA Pagamento */
 
 CREATE TABLE Pagamento (
     ID_Pagamento INT PRIMARY KEY,
-    Status VARCHAR (100) NOT NULL,
+    Status_Pagamento VARCHAR (100) NOT NULL,
     Data_Atualizacao DATE NOT NULL,
     Nota_Fiscal INT NOT NULL,
+    Tipo_Pagamento VARCHAR(100) NOT NULL,
     
 )
 
@@ -82,8 +89,6 @@ CREATE TABLE Relatorio_Vendas (
     ID_Frete INT FOREIGN KEY REFERENCES Frete(ID_Frete),
     ID_Frete_Status INT FOREIGN KEY REFERENCES Frete_Status(ID_Frete_Status),
     ID_SKU INT FOREIGN KEY REFERENCES SKU(ID_SKU),
-    ID_Categorias INT FOREIGN KEY REFERENCES Categoria(ID_Categoria),
-    ID_Subcategoria INT FOREIGN KEY REFERENCES Sub_Categoria(ID_Subcategoria),
     ID_Vendedor INT FOREIGN KEY REFERENCES Vendedor(ID_Vendedor),
     ID_Pagamento INT FOREIGN KEY REFERENCES Pagamento(ID_Pagamento)
 
@@ -147,118 +152,147 @@ VALUES
 
 -- Inserção de dados na tabela SKU
 
-INSERT INTO SKU (ID_SKU, Descricao, Tipo, ID_vendedor, Dimensao, Marca, Fabricador, Cor)
+INSERT INTO SKU (ID_SKU, Descricao, Tipo, ID_vendedor, Dimensao, Marca, Fabricador, Cor, ID_SubCategoria)
 VALUES
-    (1, 'Smartphone Modelo X', 'Eletrônico', 1, '15x8x1', 'Marca A', 'Fabricante A', 'Preto'),
-    (2, 'Laptop Modelo Y', 'Eletrônico', 1, '20x12x2', 'Marca A', 'Fabricante A', 'Prata'),
-    (3, 'Vestido Floral', 'Vestuário', 2, '90x60x5', 'Marca B', 'Fabricante B', 'Floral'),
-    (4, 'TV LED 50 polegadas', 'Eletrônico', 3, '120x70x10', 'Marca C', 'Fabricante C', 'Preto'),
-    (5, 'Sapatos Esportivos', 'Calçado', 4, '30x15x10', 'Marca D', 'Fabricante D', 'Branco'),
-    (6, 'Fogão a Gás', 'Eletrodoméstico', 5, '80x60x80', 'Marca E', 'Fabricante E', 'Inox'),
-    (7, 'Bicicleta Mountain Bike', 'Esporte e Lazer', 6, '170x70x100', 'Marca F', 'Fabricante F', 'Vermelho'),
-    (8, 'Máquina de Café', 'Eletrodoméstico', 7, '40x20x30', 'Marca G', 'Fabricante G', 'Preto'),
-    (9, 'Smartwatch Modelo Z', 'Eletrônico', 8, '10x10x5', 'Marca H', 'Fabricante H', 'Azul'),
-    (10, 'Camiseta Casual', 'Vestuário', 9, '70x50x2', 'Marca I', 'Fabricante I', 'Cinza'),
-    (11, 'Notebook Ultrabook', 'Eletrônico', 10, '18x10x1', 'Marca J', 'Fabricante J', 'Prata'),
-    (12, 'Sofá de Couro', 'Móveis', 1, '200x100x80', 'Marca A', 'Fabricante K', 'Marrom'),
-    (13, 'Colar de Pérolas', 'Acessório', 2, '10x10x1', 'Marca B', 'Fabricante L', 'Branco'),
-    (14, 'Monitor Curvo 27 polegadas', 'Eletrônico', 3, '60x40x10', 'Marca C', 'Fabricante M', 'Preto'),
-    (15, 'Tênis de Corrida', 'Calçado', 4, '28x12x10', 'Marca D', 'Fabricante N', 'Azul'),
-    (16, 'Geladeira Frost-Free', 'Eletrodoméstico', 5, '150x70x70', 'Marca E', 'Fabricante O', 'Branco'),
-    (17, 'Prancha de Surf', 'Esporte e Lazer', 6, '220x50x5', 'Marca F', 'Fabricante P', 'Azul'),
-    (18, 'Liquidificador Multifuncional', 'Eletrodoméstico', 7, '25x15x20', 'Marca G', 'Fabricante Q', 'Vermelho'),
-    (19, 'Óculos de Sol Elegance', 'Acessório', 8, '15x5x5', 'Marca H', 'Fabricante R', 'Preto'),
-    (20, 'Jaqueta de Couro Masculina', 'Vestuário', 9, '80x50x5', 'Marca I', 'Fabricante S', 'Marrom');
+    (1, 'iPhone 13', 'Celular', 1, '15 x 7 x 0.8 cm', 'Apple', 'Apple Inc.', 'Prata', 1),
+    (2, 'Galaxy S22', 'Celular', 1, '15 x 7 x 0.7 cm', 'Samsung', 'Samsung Electronics', 'Preto', 1),
+    (3, 'Dell XPS 15', 'Laptop', 1, '35 x 24 x 1.6 cm', 'Dell', 'Dell Inc.', 'Prata', 2),
+    (4, 'Sony 65" 4K TV', 'TV', 1, '145 x 85 x 12 cm', 'Sony', 'Sony Corporation', 'Preto', 1),
+    (5, 'Camiseta Estampada', 'Roupa', 2, '40 x 30 x 2 cm', 'FashionBrand', 'FashionMaker', 'Estampada', 3),
+    (6, 'Jaqueta de Couro', 'Roupa', 2, '50 x 35 x 5 cm', 'FashionBrand', 'FashionMaker', 'Preta', 4),
+    (7, 'Vestido de Festa', 'Roupa', 2, '60 x 40 x 5 cm', 'ElegantDresses', 'FashionMaker', 'Vermelho', 3),
+    (8, 'Relógio Esportivo', 'Acessório', 3, '25 x 25 x 5 cm', 'SportTime', 'AccessoryMaker', 'Azul', 5),
+    (9, 'Óculos de Sol Elegantes', 'Acessório', 3, '15 x 5 x 5 cm', 'EleganceEyewear', 'AccessoryMaker', 'Preto', 6),
+    (10, 'Bolsa de Couro Elegante', 'Acessório', 3, '30 x 25 x 10 cm', 'EleganceBag', 'AccessoryMaker', 'Caramelo', 6),
+    (11, 'Smartwatch Fitness', 'Acessório', 3, '20 x 20 x 5 cm', 'FitTech', 'AccessoryMaker', 'Verde', 5),
+    (12, 'Boné Esportivo', 'Acessório', 4, '25 x 20 x 10 cm', 'SportyCaps', 'SportsGear', 'Azul', 6),
+    (13, 'Brinco Elegante', 'Acessório', 4, '5 x 5 x 1 cm', 'ElegantJewels', 'JewelryCraft', 'Dourado', 6),
+    (14, 'Mouse Gamer', 'Acessório', 5, '10 x 8 x 4 cm', 'GamingTech', 'TechMaster', 'Preto', 2),
+    (15, 'Monitor Ultrawide', 'Monitor', 5, '120 x 40 x 10 cm', 'TechVision', 'TechMaster', 'Cinza', 1),
+    (16, 'Tênis Esportivo', 'Calçado', 6, '30 x 15 x 10 cm', 'SportyKicks', 'FootwearCo', 'Branco', 4),
+    (17, 'Sandália Casual', 'Calçado', 6, '25 x 10 x 5 cm', 'CasualSteps', 'FootwearCo', 'Marrom', 4),
+    (18, 'Mochila Escolar', 'Acessório', 7, '40 x 30 x 15 cm', 'SchoolEssentials', 'BackpacksInc', 'Azul', 6),
+    (19, 'Caneta Premium', 'Acessório', 7, '15 x 1 x 1 cm', 'LuxuryPens', 'WritingCraft', 'Prata', 6),
+    (20, 'Máquina Fotográfica', 'Eletrônico', 8, '12 x 10 x 8 cm', 'CapturePro', 'PhotographyTech', 'Preto', 1);
 
 
 -- Inserção de 50 exemplos na tabela Pagamento
-INSERT INTO Pagamento (ID_Pagamento, Status, Data_Atualizacao, Nota_Fiscal)
+INSERT INTO Pagamento (ID_Pagamento, Status_Pagamento, Data_Atualizacao, Nota_Fiscal,Tipo_Pagamento)
 VALUES
-    (1, 'Pendente', '2023-08-01', 12345),
-    (2, 'Concluído', '2023-07-25', 67890),
-    (3, 'Pendente', '2023-08-02', 54321),
-    (4, 'Em Processamento', '2023-08-03', 98765),
-    (5, 'Concluído', '2023-07-20', 45678),
-    (6, 'Em Processamento', '2023-07-15', 78901),
-    (7, 'Pendente', '2023-08-05', 23456),
-    (8, 'Concluído', '2023-07-10', 87654),
-    (9, 'Em Processamento', '2023-08-04', 56789),
-    (10, 'Pendente', '2023-07-22', 34567),
-    (11, 'Concluído', '2023-08-03', 65432),
-    (12, 'Em Processamento', '2023-07-21', 89012),
-    (13, 'Pendente', '2023-08-05', 43210),
-    (14, 'Concluído', '2023-07-18', 76543),
-    (15, 'Em Processamento', '2023-08-02', 10987),
-    (16, 'Pendente', '2023-07-28', 98765),
-    (17, 'Concluído', '2023-08-01', 21098),
-    (18, 'Em Processamento', '2023-07-30', 87654),
-    (19, 'Pendente', '2023-08-04', 10987),
-    (20, 'Concluído', '2023-07-27', 54321),
-    (21, 'Em Processamento', '2023-08-03', 65432),
-    (22, 'Pendente', '2023-07-29', 87654),
-    (23, 'Concluído', '2023-07-26', 54321),
-    (24, 'Em Processamento', '2023-08-05', 21098),
-    (25, 'Pendente', '2023-07-31', 76543),
-    (26, 'Concluído', '2023-07-24', 32109),
-    (27, 'Em Processamento', '2023-08-02', 65432),
-    (28, 'Pendente', '2023-07-30', 10987),
-    (29, 'Concluído', '2023-07-23', 43210),
-    (30, 'Em Processamento', '2023-08-01', 87654),
-    (31, 'Pendente', '2023-07-29', 54321),
-    (32, 'Concluído', '2023-07-25', 21098),
-    (33, 'Em Processamento', '2023-08-03', 76543),
-    (34, 'Pendente', '2023-07-28', 32109),
-    (35, 'Concluído', '2023-07-26', 65432),
-    (36, 'Em Processamento', '2023-08-05', 43210),
-    (37, 'Pendente', '2023-07-27', 10987),
-    (38, 'Concluído', '2023-07-24', 54321),
-    (39, 'Em Processamento', '2023-08-01', 32109),
-    (40, 'Pendente', '2023-07-23', 87654),
-    (41, 'Concluído', '2023-07-30', 54321),
-    (42, 'Em Processamento', '2023-08-02', 21098),
-    (43, 'Pendente', '2023-07-31', 65432),
-    (44, 'Concluído', '2023-07-25', 43210),
-    (45, 'Em Processamento', '2023-07-29', 10987),
-    (46, 'Pendente', '2023-08-03', 76543),
-    (47, 'Concluído', '2023-07-26', 32109),
-    (48, 'Em Processamento', '2023-08-05', 54321),
-    (49, 'Pendente', '2023-07-28', 21098),
-    (50, 'Concluído', '2023-07-24', 87654),
-    (51, 'Concluído', '2023-07-25', 67890),
-    (52, 'Pendente', '2023-08-02', 54321),
-    (53, 'Em Processamento', '2023-08-03', 98765),
-    (54, 'Concluído', '2023-07-20', 45678),
-    (55, 'Em Processamento', '2023-07-15', 78901),
-    (56, 'Pendente', '2023-08-05', 23456),
-    (57, 'Concluído', '2023-07-10', 87654),
-    (58, 'Em Processamento', '2023-08-04', 56789),
-    (59, 'Pendente', '2023-07-22', 34567),
-    (60, 'Concluído', '2023-08-03', 65432),
-    (61, 'Em Processamento', '2023-07-21', 89012),
-    (62, 'Pendente', '2023-08-05', 43210),
-    (63, 'Concluído', '2023-07-18', 76543),
-    (64, 'Em Processamento', '2023-08-02', 10987),
-    (65, 'Pendente', '2023-07-28', 98765),
-    (66, 'Concluído', '2023-08-01', 21098),
-    (67, 'Em Processamento', '2023-07-30', 87654),
-    (68, 'Pendente', '2023-08-04', 10987),
-    (69, 'Concluído', '2023-07-27', 54321),
-    (70, 'Em Processamento', '2023-08-03', 65432);
+    (1, 'Aguardando Pagamento', '2023-08-05', 12345, 'Cartão de Crédito'),
+    (2, 'Pagamento Confirmado', '2023-08-06', 12346, 'Boleto Bancário'),
+    (3, 'Enviado para Entrega', '2023-08-07', 12347, 'Cartão de Débito'),
+    (4, 'Entregue', '2023-08-08', 12348, 'PayPal'),
+    (5, 'Aguardando Pagamento', '2023-08-09', 12349, 'Cartão de Crédito'),
+    (6, 'Pagamento Confirmado', '2023-08-10', 12350, 'Boleto Bancário'),
+    (7, 'Enviado para Entrega', '2023-08-11', 12351, 'Cartão de Débito'),
+    (8, 'Entregue', '2023-08-12', 12352, 'PayPal'),
+    (9, 'Aguardando Pagamento', '2023-08-13', 12353, 'Cartão de Crédito'),
+    (10, 'Pagamento Confirmado', '2023-08-14', 12354, 'Boleto Bancário'),
+    (11, 'Enviado para Entrega', '2023-08-15', 12355, 'Cartão de Débito'),
+    (12, 'Entregue', '2023-08-16', 12356, 'PayPal'),
+    (13, 'Aguardando Pagamento', '2023-08-17', 12357, 'Cartão de Crédito'),
+    (14, 'Pagamento Confirmado', '2023-08-18', 12358, 'Boleto Bancário'),
+    (15, 'Enviado para Entrega', '2023-08-19', 12359, 'Cartão de Débito'),
+    (16, 'Entregue', '2023-08-20', 12360, 'PayPal'),
+    (17, 'Aguardando Pagamento', '2023-08-21', 12361, 'Cartão de Crédito'),
+    (18, 'Pagamento Confirmado', '2023-08-22', 12362, 'Boleto Bancário'),
+    (19, 'Enviado para Entrega', '2023-08-23', 12363, 'Cartão de Débito'),
+    (20, 'Entregue', '2023-08-24', 12364, 'PayPal'),
+    (21, 'Aguardando Pagamento', '2023-08-25', 12365, 'Cartão de Crédito'),
+    (22, 'Pagamento Confirmado', '2023-08-26', 12366, 'Boleto Bancário'),
+    (23, 'Enviado para Entrega', '2023-08-27', 12367, 'Cartão de Débito'),
+    (24, 'Entregue', '2023-08-28', 12368, 'PayPal'),
+    (25, 'Aguardando Pagamento', '2023-08-29', 12369, 'Cartão de Crédito'),
+    (26, 'Pagamento Confirmado', '2023-08-30', 12370, 'Boleto Bancário'),
+    (27, 'Enviado para Entrega', '2023-08-31', 12371, 'Cartão de Débito'),
+    (28, 'Entregue', '2023-09-01', 12372, 'PayPal'),
+    (29, 'Aguardando Pagamento', '2023-09-02', 12373, 'Cartão de Crédito'),
+    (30, 'Pagamento Confirmado', '2023-09-03', 12374, 'Boleto Bancário');
+
 
 
 -- Inserção de dados na tabela Relatorio_Vendas
-INSERT INTO Relatorio_Vendas (Order_ID, Data_Compra, ID_Frete, ID_Frete_Status, ID_SKU, ID_Categorias, ID_Subcategoria, ID_Vendedor, ID_Pagamento)
+INSERT INTO Relatorio_Vendas (Order_ID, Data_Compra, ID_Frete, ID_Frete_Status, ID_SKU, ID_Vendedor, ID_Pagamento)
 SELECT
     ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS Order_ID,
     DATEADD(DAY, -ABS(CHECKSUM(NEWID())) % 365, GETDATE()) AS Data_Compra,
     ABS(CHECKSUM(NEWID())) % 2 + 1 AS ID_Frete,
     ABS(CHECKSUM(NEWID())) % 3 + 1 AS ID_Frete_Status,
     ABS(CHECKSUM(NEWID())) % 20 + 1 AS ID_SKU,
-    ABS(CHECKSUM(NEWID())) % 6 + 1 AS ID_Categorias,
-    ABS(CHECKSUM(NEWID())) % 12 + 1 AS ID_Subcategoria,
     ABS(CHECKSUM(NEWID())) % 10 + 1 AS ID_Vendedor,
     ID_Pagamento
 FROM Pagamento;
+
+
+/* --------------------------------- CONSTRUÇÃO DE VIEWS -------------------------------------------- */
+
+-- Vendas de Eletronicos
+-- Join com tabela Categoria e Sub_Categoria
+
+CREATE VIEW VendasEletronicos AS
+    SELECT rv.*, c.Descricao
+    FROM Relatorio_Vendas rv
+       JOIN SKU s
+            ON s.ID_SKU = rv.ID_SKU
+        JOIN Sub_Categoria sc 
+            ON sc.ID_SubCategoria = s.ID_SubCategoria
+        JOIN  Categoria c
+            ON sc.ID_Categoria = c.ID_Categoria
+    WHERE c.Descricao = 'Eletrônicos';
+
+SELECT * FROM VendasEletronicos;
+
+drop view vendaseletronicos
+-- Vendas de Produtos na Cor Preta
+-- Join com tabela Produtos/SKU
+
+CREATE VIEW ProdutosPretos AS
+    SELECT rv.Order_ID, s.*
+    FROM Relatorio_Vendas rv
+        JOIN SKU s
+            ON rv.ID_SKU = s.ID_SKU
+    WHERE s.cor = 'Preto';
+
+SELECT * FROM ProdutosPretos;
+
+
+-- Vendas de Produtos no Boleto Bancario
+-- Join com tabela Pagamento
+
+CREATE VIEW VendasBoleto AS
+    SELECT rv.Order_ID, p.*
+    FROM Relatorio_Vendas rv
+        JOIN Pagamento P
+            ON rv.ID_Pagamento = p.ID_Pagamento
+    WHERE p.Tipo_Pagamento = 'Boleto Bancário';
+
+SELECT * FROM VendasBoleto;
+
+
+-- Vendas de Produtos com Frete Expresso
+-- Join com tabela Frete
+
+CREATE VIEW FreteExpresso AS
+    SELECT rv.*, f.descricao
+    FROM Relatorio_Vendas rv
+        JOIN Frete f
+            ON rv.ID_Frete = f.ID_Frete
+    WHERE f.descricao = 'Frete Expresso';
+
+SELECT * FROM FreteExpresso;
+
+-- Vendas do Vendedor A
+-- Join com tabela Vendedores
+
+CREATE VIEW VendasVendedorA AS
+    SELECT rv.*, v.descricao
+    FROM Relatorio_Vendas rv
+        JOIN Vendedor v
+            ON rv.ID_Vendedor = v.ID_Vendedor
+    WHERE v.descricao = 'Vendedor A';
+
+SELECT * FROM VendasVendedorA;
 
 
 /* --------------------------------- CONSULTA DAS TABELAS -------------------------------------------- */
@@ -323,4 +357,4 @@ TRUNCATE TABLE Vendedor
 TRUNCATE TABLE SKU
 TRUNCATE TABLE Sub_Categoria
 TRUNCATE TABLE Categoria
-TRUNCATE TABLE Pagamento    
+TRUNCATE TABLE Pagamento       
